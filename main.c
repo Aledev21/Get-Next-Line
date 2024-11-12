@@ -1,8 +1,7 @@
-#include <fcntl.h>    // Para open
-#include <stdio.h>     // Para printf
-#include <unistd.h>    // Para close
-#include "get_next_line.h" // Inclui o header do get_next_line
-
+#include <fcntl.h>   
+#include <stdio.h>   
+#include <unistd.h>    
+#include "get_next_line.h" 
 int main(void) {
     int fd = open("text.txt", O_RDONLY);
     if (fd == -1) {
@@ -13,9 +12,9 @@ int main(void) {
     char *line;
     while ((line = get_next_line(fd)) != NULL) {
         printf("%s", line);
-        free(line); // Libera a memória após imprimir cada linha
+        free(line); 
     }
 
-    close(fd); // Fecha o arquivo ao final
+    close(fd);
     return 0;
 }
