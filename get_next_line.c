@@ -6,13 +6,12 @@
 /*   By: aassis-p <aassis-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 23:34:15 by aassis-p          #+#    #+#             */
-/*   Updated: 2024/11/12 12:19:58 by aassis-p         ###   ########.fr       */
+/*   Updated: 2024/11/12 12:33:12 by aassis-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-// Função auxiliar para calcular o comprimento de uma string
 int my_strlen(const char *str) {
 	int len = 0;
 	while (str[len] != '\0') {
@@ -21,7 +20,6 @@ int my_strlen(const char *str) {
 	return len;
 }
 
-// Função auxiliar para concatenar strings manualmente
 void my_strcat(char *dest, const char *src) {
 	int dest_len = my_strlen(dest);
 	int i = 0;
@@ -32,18 +30,15 @@ void my_strcat(char *dest, const char *src) {
 	dest[dest_len + i] = '\0';
 }
 
-// Função auxiliar para converter um número inteiro para string
 char *my_itoa(int num) {
 	int len = 0;
 	int temp = num;
 
-	// Calcula o número de dígitos no número
 	do {
 		len++;
 		temp /= 10;
 	} while (temp);
 
-	// Aloca memória para a string (dígitos + 1 para o terminador nulo)
 	char *str = (char *)malloc(len + 1);
 	if (!str) return NULL;
 
