@@ -12,89 +12,68 @@
 
 #include "get_next_line.h"
 
-int my_strlen(const char *str) {
-	int len = 0;
-	while (str[len] != '\0') {
+static char	*ft_append(char **s, char **line)
+{
+	int		len;
+	char	*tmp;
+
+	len = 0;
+	while ((*s)[len] != '\n' && (*s)[len] != '\0')
 		len++;
-	}
-	return len;
-}
-
-void my_strcat(char *dest, const char *src) {
-	int dest_len = my_strlen(dest);
-	int i = 0;
-	while (src[i] != '\0') {
-		dest[dest_len + i] = src[i];
-		i++;
-	}
-	dest[dest_len + i] = '\0';
-}
-
-char *my_itoa(int num) {
-	int len = 0;
-	int temp = num;
-
-	do {
-		len++;
-		temp /= 10;
-	} while (temp);
-
-	char *str = (char *)malloc(len + 1);
-	if (!str) return NULL;
-
-	str[len] = '\0';
-	while (len--) {
-		str[len] = '0' + (num % 10);
-		num /= 10;
-	}
-	return str;
-}
-
-// Função auxiliar para simular fgets usando read
-char *my_fgets(char *buffer, int size, int fd) {
-	int i = 0;
-	char ch;
-	while (i < size - 1 && read(fd, &ch, 1) > 0) {
-		buffer[i++] = ch;
-		if (ch == '\n')
-			break;
-	}
-	buffer[i] = '\0';
-	if (i == 0)  // Caso nada tenha sido lido
-		return NULL;
-	return buffer;
-}
-
-char *get_next_line(int fd) {
-	char *buffer = (char *)malloc(BUFFER_SIZE + 1);
-	if (!buffer)
-		return NULL;
-		
-	static int pipe_fd = -1;
-	if (pipe_fd == -1)
+	if ((*s)[len] == '\n')
 	{
-		char command[MAX_COMMAND_LENGTH] = "sed -n p <&";
-		
-		char *fd_str = my_itoa(fd);
-		if (!fd_str) {
-			free(buffer);
-			return NULL;
-		}
-		my_strcat(command, fd_str); // Concatena o `fd_str` ao comando
-		free(fd_str);
-
-		pipe_fd = mini_popen(command);
-		if (pipe_fd == -1) {
-			free(buffer);
-			return NULL;
+		*line = ft_substr(*s, 0, len + 1);
+		tmp = ft_strdup(&(*s)[len + 1]);
+		free(*s);
+		*s = tmp;
+		if ((*s)[0] == 0)
+		{
+			free(*s);
+			*s = 0;
 		}
 	}
-	if (my_fgets(buffer, BUFFER_SIZE + 1, pipe_fd) == NULL) {
-		free(buffer);
-		buffer = NULL;
-		close(pipe_fd);
-		pipe_fd = -1;
+	else
+	{
+		*line = ft_strdup(*s);
+		free(*s);
+		*s = 0;
 	}
+	return (*line);
+}
 
-	return buffer;
+static char	*ft_line(char **s, char **line, int ret, int fd)
+{
+	if (ret <= 0 && s[fd] == NULL)
+		return (0);
+	else
+		return (ft_append(&s[fd], line));
+}
+
+char	*get_next_line(int fd)
+{
+	int			ret;
+	static char	*s[10240];
+	char		buf[BUFFER_SIZE + 1];
+	char		*tmp;
+	char		*line;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (0);
+	ret = read(fd, buf, BUFFER_SIZE);
+	while (ret > 0)
+	{
+		buf[ret] = 0;
+		if (s[fd] == 0)
+			s[fd] = ft_strdup(buf);
+		else
+		{
+			tmp = ft_strjoin(s[fd], buf);
+			free(s[fd]);
+			s[fd] = tmp;
+		}
+		if (ft_strchr(s[fd], '\n'))
+			break ;
+		ret = read(fd, buf, BUFFER_SIZE);
+	}
+	return (ft_line(s, &line, ret, fd));
 }
