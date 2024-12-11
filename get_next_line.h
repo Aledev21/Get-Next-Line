@@ -12,16 +12,15 @@
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# define MAX_COMMAND_LENGTH 256
-# define BUFFER_SIZE 42
 # include <stdlib.h>
 # include <unistd.h>
+# include <stdio.h>
 
-char	*get_next_line(int fd);
-int mini_popen(const char *command);
-char *my_fgets(char *buffer, int size, int fd);
-char *my_itoa(int num);
-void my_strcat(char *dest, const char *src);
-int my_strlen(const char *str);
+char			*get_next_line(int fd);
+unsigned int	ft_strlen(char *str);
+char			*ft_strdup(char *s);
+char			*ft_strjoin(char *s1, char *s2);
+char			*ft_strchr(char *str, char c);
+char			*ft_substr(char *s, unsigned int start, unsigned int end);
 
 #endif
